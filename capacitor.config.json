@@ -1,0 +1,9 @@
+{
+  "appId": "com.novateur.winningstreak",
+  "appName": "Winning Streak",
+  "webDir": "www",
+  "backgroundColor": "#0E1330",
+  "plugins": {
+    "LocalNotifications": { "smallIcon": "ic_stat_moon", "iconColor": "#F2B84B" }
+  }
+}

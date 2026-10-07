@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1330">
+<title>Get Winning Streak</title>
+<meta name="description" content="Install Winning Streak: the Android app (APK) or the web app for iPhone and any phone.">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0E1330; --surface:#161D45; --ink:#E9E6F5; --muted:#9AA0C3; --line:#2A3263;
+  --gold:#F2B84B; --ongold:#1A1430; --rose:#C98BB9;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Jost","Segoe UI",system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;min-height:100vh;color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.55;
+  background:radial-gradient(120% 55% at 50% -8%, rgba(201,139,185,.16), transparent 62%), var(--bg);
+  -webkit-font-smoothing:antialiased;padding:env(safe-area-inset-top,0) 16px env(safe-area-inset-bottom,0);
+}
+.wrap{max-width:34rem;margin:0 auto;padding:2.5rem 0 4rem}
+.logo{width:92px;height:92px;display:block;margin:0 auto 1rem;border-radius:22px;box-shadow:0 10px 40px rgba(0,0,0,.45)}
+h1{font-family:var(--serif);font-weight:600;font-size:2.8rem;text-align:center;margin:.2rem 0 .1rem;letter-spacing:-.01em}
+.tag{text-align:center;color:var(--muted);font-family:var(--serif);font-style:italic;font-size:1.3rem;margin:0 0 2.25rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:1.4rem 1.3rem;margin:1.1rem 0}
+.card h2{font-family:var(--serif);font-weight:600;font-size:1.7rem;margin:0 0 .2rem}
+.card .lead{color:var(--muted);margin:.1rem 0 1rem;font-size:1rem}
+.btn{display:block;width:100%;text-align:center;text-decoration:none;border-radius:999px;padding:1rem 1.25rem;font-weight:600;font-size:1.08rem}
+.btn.gold{background:var(--gold);color:var(--ongold)}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);margin-top:.7rem;font-weight:500}
+ol{margin:1rem 0 .3rem;padding-left:1.25rem}
+ol li{margin:.45rem 0}
+.alt{font-size:.92rem;color:var(--muted);margin:.9rem 0 0;text-align:center}
+.alt a{color:var(--rose)}
+.note{color:var(--muted);font-size:.92rem;text-align:center;margin:2rem 0 0;line-height:1.6}
+.kbd{color:var(--gold);font-weight:600}
+.share{display:inline-block;transform:translateY(2px)}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <img class="logo" src="icons/icon-192.png" alt="Winning Streak icon">
+  <h1>Winning Streak</h1>
+  <p class="tag">Tick tonight's wins. Affirm your dream life. Sleep.</p>
+
+  <section class="card">
+    <h2>Android</h2>
+    <p class="lead">Install the full app, with the nightly reminder.</p>
+    <a class="btn gold" href="WinningStreak.apk" download>Download WinningStreak.apk</a>
+    <ol>
+      <li>Tap <span class="kbd">Download WinningStreak.apk</span> above, then open it.</li>
+      <li>When Android says the file can't be installed, tap <span class="kbd">Settings</span> and turn on <span class="kbd">Allow from this source</span> (Install unknown apps) for your browser, then go back.</li>
+      <li>Tap <span class="kbd">Install</span>, open Winning Streak, and allow notifications.</li>
+    </ol>
+    <p class="alt">Updates install right over the old app — same signing key, forever.<br>
+      Or get it from <a href="https://github.com/DK0087/winning-streak/releases/latest" target="_blank" rel="noopener">GitHub Releases</a>.</p>
+  </section>
+
+  <section class="card">
+    <h2>iPhone &amp; any phone</h2>
+    <p class="lead">Install the web app — works offline, no app store.</p>
+    <a class="btn gold" href="./">Open the web app</a>
+    <ol>
+      <li><b>iPhone (Safari):</b> tap the <span class="share">&#x2191;</span> Share button, then <span class="kbd">Add to Home Screen</span>.</li>
+      <li><b>Android (Chrome):</b> tap <span class="kbd">&#8942;</span> menu, then <span class="kbd">Add to Home screen</span> / <span class="kbd">Install app</span>.</li>
+    </ol>
+    <a class="btn ghost" href="./">Launch Winning Streak</a>
+  </section>
+
+  <p class="note">Everything you enter — wins, goals, photos and your streak — stays on your phone and works offline.
+  Switching phones? Use <span class="kbd">Back up</span> on the home screen to save a file, and <span class="kbd">Restore</span> it on the new phone.</p>
+</main>
+</body>
+</html>

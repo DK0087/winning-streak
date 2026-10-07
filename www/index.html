@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0E1330">
+<title>Winning Streak</title>
+<meta name="description" content="Nightly Winning Streak ritual: tick tonight's honest wins, then affirm your dream life. Everything stays on your phone.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="icon" href="icons/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Winning Streak">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3F1FA; --surface:#FFFFFF; --ink:#1A1F45; --muted:#5D6390; --line:#DCD9EE;
+  --amber:#94600E; --onamber:#FFFFFF; --rose:#9E5A8C; --glow:rgba(158,90,140,.10);
+  --serif:"Cormorant Garamond","Cormorant",Georgia,"Times New Roman",serif;
+  --sans:"Jost","Avenir Next","Segoe UI",system-ui,-apple-system,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1330; --surface:#161D45; --ink:#E9E6F5; --muted:#9AA0C3; --line:#2A3263;
+    --amber:#F2B84B; --onamber:#1A1430; --rose:#C98BB9; --glow:rgba(201,139,185,.16);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1330; --surface:#161D45; --ink:#E9E6F5; --muted:#9AA0C3; --line:#2A3263;
+  --amber:#F2B84B; --onamber:#1A1430; --rose:#C98BB9; --glow:rgba(201,139,185,.16);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{
+  margin:0;min-height:100%;
+  background:radial-gradient(120% 55% at 50% -8%, var(--glow), transparent 62%), var(--bg);
+  background-attachment:fixed;
+  color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;
+}
+img,video{max-width:100%}
+button{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible,label:focus-within{outline:2px solid var(--amber);outline-offset:3px}
+#app{transition:opacity .42s ease}
+body.fading #app{opacity:0}
+
+.view{max-width:34rem;margin:0 auto;padding:1.25rem 1.25rem 8rem}
+.brand{font-family:var(--serif);font-weight:600;font-size:2.6rem;line-height:1.05;letter-spacing:-.01em;margin:1.25rem 0 0;text-align:center}
+.hero{text-align:center;margin:2.25rem 0 2.5rem}
+.moons{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin:0 auto 1.75rem;max-width:20rem}
+.moon{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--line)}
+.moon.on{background:var(--amber);border-color:var(--amber);box-shadow:0 0 10px rgba(242,184,75,.45)}
+.moon.tonight{border-style:dashed;border-color:var(--amber)}
+.streak{font-family:var(--serif);font-size:1.6rem;margin:0;line-height:1.2}
+.streak .num{display:block;font-size:4.25rem;font-weight:600;line-height:1;color:var(--amber);margin-bottom:.15rem}
+.sub{color:var(--muted);margin:.5rem 0 0;font-size:1rem}
+.actions{display:grid;gap:.75rem}
+.actions.sticky{
+  position:fixed;left:0;right:0;bottom:0;z-index:5;
+  padding:1.5rem max(1.25rem, calc((100% - 34rem)/2 + 1.25rem)) calc(1rem + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(to bottom, transparent, var(--bg) 40%);
+}
+.btn{display:block;width:100%;border-radius:999px;padding:1rem 1.5rem;border:1px solid transparent;font-weight:500;font-size:1.05rem;cursor:pointer;text-align:center}
+.btn.primary{background:var(--amber);color:var(--onamber)}
+.btn.ghost{background:transparent;border-color:var(--line);color:var(--ink)}
+.btn.small{display:inline-flex;align-items:center;width:auto;padding:.5rem .95rem;font-size:.92rem;border-color:var(--line);background:transparent;color:var(--ink)}
+.donenote{text-align:center;font-family:var(--serif);font-size:1.4rem;margin:0}
+.firstnote{text-align:center;color:var(--muted);font-size:.95rem;margin:.25rem 0 0}
+.manage{display:flex;justify-content:center;gap:1.5rem;margin-top:2.25rem;flex-wrap:wrap}
+.backup{display:flex;justify-content:center;align-items:center;gap:1rem;margin-top:1.1rem;flex-wrap:wrap}
+.backup .dot-sep{color:var(--line)}
+.backup .hintline{flex-basis:100%;text-align:center;color:var(--muted);font-size:.82rem;margin:.1rem 0 0}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:4px;padding:.5rem .25rem;cursor:pointer;font-size:.98rem}
+
+.bar{display:flex;align-items:center;gap:.8rem;margin:.25rem 0 .25rem}
+.bar h2{font-family:var(--serif);font-weight:600;font-size:2rem;line-height:1.1;margin:0;flex:1}
+.back{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--line);background:transparent;font-size:1.6rem;line-height:1;cursor:pointer;display:grid;place-items:center;padding-bottom:3px}
+.count{color:var(--muted);font-size:.95rem;white-space:nowrap}
+.count.glow{color:var(--amber);animation:pulse 1.2s ease}
+@keyframes pulse{0%{transform:scale(1)}30%{transform:scale(1.15)}100%{transform:scale(1)}}
+.hint{color:var(--muted);margin:.35rem 0 1rem;font-size:.98rem}
+
+.wins{list-style:none;margin:0;padding:0}
+.win{display:grid;grid-template-columns:30px 1fr auto;gap:.9rem;align-items:center;width:100%;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:.95rem 1rem;margin:.55rem 0;cursor:pointer;
+  transition:background-color .25s ease,border-color .25s ease}
+.win.on{border-color:var(--amber)}
+.box{width:28px;height:28px;border-radius:9px;border:1.5px solid var(--muted);display:grid;place-items:center;transition:background-color .25s ease,border-color .25s ease}
+.win.on .box{background:var(--amber);border-color:var(--amber)}
+.box svg{width:18px;height:18px;fill:none;stroke:var(--onamber);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .35s ease .05s}
+.win.on .box svg{stroke-dashoffset:0}
+.wt{font-size:1.02rem;line-height:1.35}
+.ws{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.win.on .ws{color:var(--amber)}
+.empty{text-align:center;padding:2.5rem 0;display:grid;gap:.9rem}
+.empty p{margin:0 0 .5rem;color:var(--muted)}
+
+.edit,.gedit{list-style:none;margin:0 0 1rem;padding:0}
+.edit li{margin:.7rem 0}
+textarea{width:100%;font:inherit;font-size:1rem;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.65rem .75rem;resize:vertical;line-height:1.4}
+textarea:focus{border-color:var(--amber);outline:none}
+.rowbtns{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.45rem;align-items:center}
+.icon{min-width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:transparent;cursor:pointer;font-size:1rem}
+.icon:disabled{opacity:.35;cursor:default}
+.gcard{display:grid;grid-template-columns:84px 1fr;gap:.9rem;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:.8rem;margin:.65rem 0}
+.gcard textarea{background:var(--bg)}
+.thumb{width:84px;height:124px;border-radius:12px;overflow:hidden;position:relative;background:#0b1030}
+.thumb img,.thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.upmsg{font-size:.88rem;color:var(--rose);margin:.35rem 0 0}
+.upmsg:empty{display:none}
+.textbtn{background:none;border:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-size:.9rem;padding:.4rem .2rem}
+
+/* Dream life */
+.dream{position:fixed;inset:0;z-index:10;background:#070a1f;color:#F5F2FF;overflow:hidden;animation:fadein 1s ease both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.stage{position:absolute;inset:0}
+.layer{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease;overflow:hidden}
+.layer.show{opacity:1}
+.layer img,.layer video{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover}
+.kb{animation:kb 18s ease-in-out infinite alternate}
+.kb0{transform-origin:50% 45%}.kb1{transform-origin:25% 40%}.kb2{transform-origin:75% 60%}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.14)}}
+.aurora{position:absolute;inset:-25%;
+  background:
+    radial-gradient(38% 32% at 30% 30%, hsl(calc(var(--h) + 0) 70% 58% / .60), transparent 70%),
+    radial-gradient(44% 40% at 72% 58%, hsl(calc(var(--h) + 70) 62% 55% / .50), transparent 70%),
+    radial-gradient(50% 42% at 42% 82%, hsl(calc(var(--h) + 190) 78% 62% / .38), transparent 70%),
+    #0b1030;
+  filter:blur(6px);animation:drift 20s ease-in-out infinite alternate}
+.aurora.still{inset:0;animation:none;filter:none}
+@keyframes drift{to{transform:translate3d(5%,-4%,0) scale(1.1) rotate(4deg)}}
+.stars{position:absolute;inset:0;opacity:.55;background-size:240px 240px;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 72% 18%, #fff 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 42% 62%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 86% 76%, #fff 50%, transparent 51%),
+    radial-gradient(1px 1px at 11% 86%, #fff 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 60% 40%, #fff 50%, transparent 51%);
+  animation:twinkle 5s ease-in-out infinite alternate}
+@keyframes twinkle{to{opacity:.2}}
+.scrim{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg, rgba(7,10,31,.45) 0%, rgba(7,10,31,0) 22%, rgba(7,10,31,.1) 50%, rgba(7,10,31,.82) 100%)}
+.dtop{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:1rem;
+  padding:calc(env(safe-area-inset-top,0px) + .75rem) 1rem .75rem}
+.dclose{width:44px;height:44px;flex:none;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#fff;font-size:1.5rem;line-height:1;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.dots{display:flex;gap:6px;flex:1;justify-content:center;padding-right:60px}
+.dot{height:3px;flex:1;max-width:42px;border-radius:2px;background:rgba(255,255,255,.28);transition:background-color .4s}
+.dot.past{background:rgba(255,255,255,.85)}
+.dot.now{background:#F2B84B}
+.dtext{position:absolute;left:0;right:0;z-index:2;bottom:calc(env(safe-area-inset-bottom,0px) + 11rem);padding:0 1.75rem;text-align:center}
+.goal{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(2rem,8vw,3.2rem);line-height:1.1;margin:0 auto;max-width:20ch;
+  text-shadow:0 2px 28px rgba(0,0,0,.5);opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+.goal.show{opacity:1;transform:none;transition:opacity 1s ease .3s,transform 1s ease .3s}
+.affirmed{color:#F2B84B;font-size:1rem;margin:1rem 0 0;opacity:0;transition:opacity .4s ease}
+.affirmed.show{opacity:1}
+.dhold{position:absolute;left:0;right:0;z-index:2;bottom:calc(env(safe-area-inset-bottom,0px) + 1.75rem);display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.hold{width:100px;height:100px;border-radius:50%;border:0;padding:0;position:relative;cursor:pointer;
+  background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .2s ease,background-color .35s ease}
+.hold.pressing{transform:scale(.93)}
+.hold.done{background:#F2B84B}
+.hold .ringsvg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.track{fill:none;stroke:rgba(255,255,255,.22);stroke-width:4}
+.ring{fill:none;stroke:#F2B84B;stroke-width:4;stroke-linecap:round;stroke-dasharray:339.292;stroke-dashoffset:339.292}
+.hold .ic{position:absolute;left:50%;top:50%;width:34px;height:34px;transform:translate(-50%,-50%)}
+.ic-moon{fill:#F5F2FF;transition:opacity .25s}
+.ic-check{fill:none;stroke:#1A1430;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .4s ease .1s}
+.hold.done .ic-moon{opacity:0}
+.hold.done .ic-check{stroke-dashoffset:0}
+.holdhint{margin:0;font-size:.95rem;color:rgba(245,242,255,.85)}
+
+/* Done */
+.done{text-align:center}
+.bigmoon{width:120px;height:120px;border-radius:50%;margin:3.5rem auto 2rem;
+  background:radial-gradient(circle at 35% 35%, #FFF3D1, #F2B84B 58%, #C98A2A);
+  box-shadow:0 0 70px rgba(242,184,75,.45);animation:rise 1.8s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{transform:translateY(48px);opacity:0}to{transform:none;opacity:1}}
+.doneh{font-family:var(--serif);font-weight:600;font-size:2.5rem;line-height:1.1;margin:0}
+.donep{font-family:var(--serif);font-style:italic;font-size:1.45rem;color:var(--muted);margin:.5rem 0 2.25rem}
+.done .streak .num{font-size:3.5rem}
+
+#toast{position:fixed;left:50%;z-index:30;bottom:calc(env(safe-area-inset-bottom,0px) + 6.5rem);transform:translate(-50%,10px);
+  background:var(--ink);color:var(--bg);padding:.6rem 1.1rem;border-radius:999px;font-size:.92rem;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;max-width:90vw;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion: reduce){
+  .kb,.aurora,.stars,.bigmoon,.dream,.count.glow{animation:none}
+  *,*::before,*::after{transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<input type="file" id="importFile" accept="application/json,.json" hidden>
+<script>
+(function(){
+'use strict';
+var HOLD_MS=1100, DAY_START=4, LS='winningStreak.v1', CIRC=339.292;
+var S={items:[],goals:[],history:{},cfgAt:0};
+var view='home', dreamIndex=0, db=null, assets=null, docRef=null;
+var draftItems=null, draftGoals=null, advanceTimer=0;
+var hold={raf:0,start:0,p:0,done:false};
+var app=document.getElementById('app');
+function $(s){return document.querySelector(s);}
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function pad(n){return String(n).padStart(2,'0');}
+function fmt(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+function nightKey(){return fmt(new Date(Date.now()-DAY_START*3600000));}
+function shiftKey(k,n){var p=k.split('-').map(Number);return fmt(new Date(p[0],p[1]-1,p[2]+n));}
+function isDone(k){var n=S.history[k];return !!(n&&n.d);}
+function tonight(){var k=nightKey();if(!S.history[k])S.history[k]={i:[],g:[],d:0};return S.history[k];}
+function ritualStreak(){var k=nightKey();if(!isDone(k))k=shiftKey(k,-1);var n=0;while(isDone(k)){n++;k=shiftKey(k,-1);}return n;}
+function bestStreak(){var keys=Object.keys(S.history).filter(isDone).sort();var best=0,run=0,prev=null;
+  keys.forEach(function(k){run=(prev&&shiftKey(prev,1)===k)?run+1:1;if(run>best)best=run;prev=k;});return best;}
+function itemStreak(id){var k=nightKey(),t=S.history[k];var n=(t&&t.i.indexOf(id)>=0)?1:0;var p=shiftKey(k,-1);
+  while(isDone(p)&&S.history[p].i.indexOf(id)>=0){n++;p=shiftKey(p,-1);}return n;}
+function nights(n){return n+(n===1?' night':' nights');}
+function nid(p){return p+Math.random().toString(36).slice(2,9);}
+function buzz(p){try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+function toast(msg){var t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show');},2400);}
+function hue(i){return (i*47+200)%360;}
+
+/* ---------- storage ---------- */
+function serialize(){return {v:1,cfgAt:S.cfgAt,items:S.items,goals:S.goals,history:S.history};}
+function loadLocal(){try{var r=JSON.parse(localStorage.getItem(LS)||'null');
+  if(r&&typeof r==='object'){S.items=Array.isArray(r.items)?r.items:[];S.goals=Array.isArray(r.goals)?r.goals:[];
+  S.history=(r.history&&typeof r.history==='object')?r.history:{};S.cfgAt=r.cfgAt||0;}}catch(e){}}
+function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(serialize()));}catch(e){}}
+var queued=false, chain=Promise.resolve();
+function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function persist(){
+  saveLocal();
+  if(!docRef||queued)return;
+  queued=true;
+  chain=chain.then(function(){
+    queued=false;
+    var body=JSON.parse(JSON.stringify(serialize()));
+    return docRef.set(body).catch(function(e){
+      var code=e&&e.code;
+      if(code==='unavailable'){return wait(700+Math.random()*900).then(function(){return docRef.set(body);}).catch(function(){toast('Saved on this phone. It will sync next time.');});}
+      if(code==='quota_exceeded'){toast('Storage is full. Remove a few goals or images.');return;}
+      toast('Saved on this phone only.');
+    });
+  });
+}
+function score(n){if(!n)return -1;return (n.i||[]).length+(n.g||[]).length+(n.d?100:0);}
+function mergeRemote(r){
+  var push=false, rc=r.cfgAt||0;
+  if(rc>=S.cfgAt){if(Array.isArray(r.items))S.items=r.items;if(Array.isArray(r.goals))S.goals=r.goals;S.cfgAt=rc;}
+  else push=true;
+  var rh=(r.history&&typeof r.history==='object')?r.history:{};
+  Object.keys(rh).forEach(function(k){var a=S.history[k],b=rh[k];if(!a||score(b)>score(a))S.history[k]=b;});
+  Object.keys(S.history).forEach(function(k){if(score(S.history[k])>score(rh[k]))push=true;});
+  return push;
+}
+function connect(){
+  if(!window.claude||typeof window.claude.use!=='function')return;
+  Promise.all([window.claude.use('db'),window.claude.use('user'),window.claude.use('assets')]).then(function(res){
+    var dbNs=res[0],userNs=res[1];assets=res[2]||null;
+    if(!dbNs||!userNs)return null;
+    return userNs.id().then(function(id){
+      if(!id)return null;
+      db=dbNs;docRef=db.doc('data/users/'+id+'/state');
+      return docRef.get().catch(function(){return wait(900).then(function(){return docRef.get();});}).then(function(snap){
+        if(snap&&snap.exists){var push=mergeRemote(JSON.parse(JSON.stringify(snap.data())));saveLocal();if(push)persist();}
+        else if(S.items.length||S.goals.length||Object.keys(S.history).length)persist();
+      });
+    });
+  }).catch(function(e){console.warn('Sync unavailable',e);}).then(function(){
+    if(view==='home'||view==='editGoals')render();
+  });
+}
+
+/* ---------- views ---------- */
+function renderHome(){
+  var k=nightKey(),t=S.history[k],done=isDone(k),streak=ritualStreak(),best=bestStreak();
+  var moons='';
+  for(var d=13;d>=0;d--){var kk=shiftKey(k,-d);var cls='moon'+(isDone(kk)?' on':(d===0?' tonight':''));moons+='<span class="'+cls+'" title="'+kk+'"></span>';}
+  var line=streak>0?'<p class="streak"><span class="num">'+streak+'</span> '+(streak===1?'night':'nights')+' in a row</p>'
+    :'<p class="streak">Tonight starts your streak</p>';
+  var sub=best>streak?'Best so far: '+nights(best):(streak>1?'Your best run yet':'');
+  var action;
+  if(done)action='<p class="donenote">Tonight is done.</p><button class="btn ghost" data-go="dream">Visit my dream life again</button>';
+  else if(t)action='<button class="btn primary" data-go="streak">Continue tonight</button>';
+  else action='<button class="btn primary" data-go="streak">Begin tonight</button>';
+  var first=!S.goals.length?'<p class="firstnote">Add your dream goals so they appear after your wins.</p>':'';
+  app.innerHTML='<main class="view home">'+
+    '<h1 class="brand">Winning Streak</h1>'+
+    '<section class="hero"><div class="moons" role="img" aria-label="Last 14 nights">'+moons+'</div>'+line+
+    (sub?'<p class="sub">'+sub+'</p>':'')+'</section>'+
+    '<div class="actions">'+action+first+'</div>'+
+    '<nav class="manage"><button class="link" data-go="editItems">Edit nightly list</button>'+
+    '<button class="link" data-go="editGoals">Dream goals ('+S.goals.length+')</button></nav>'+reminderRow()+backupRow()+'</main>';
+}
+
+function renderStreak(){
+  var t=S.history[nightKey()];var ticked=t?t.i:[];
+  var count=S.items.filter(function(x){return ticked.indexOf(x.id)>=0;}).length;
+  var rows=S.items.map(function(it){var on=ticked.indexOf(it.id)>=0,n=itemStreak(it.id);
+    return '<li><button class="win'+(on?' on':'')+'" data-item="'+esc(it.id)+'" aria-pressed="'+on+'">'+
+      '<span class="box" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg></span>'+
+      '<span class="wt">'+esc(it.text)+'</span><span class="ws">'+nights(n)+'</span></button></li>';}).join('');
+  app.innerHTML='<main class="view">'+
+    '<header class="bar"><button class="back" data-go="home" aria-label="Back to home">‹</button><h2>Tonight’s wins</h2>'+
+    '<span class="count" id="count">'+count+' of '+S.items.length+'</span></header>'+
+    '<p class="hint">Tick only what’s true today.</p>'+
+    (S.items.length?'<ul class="wins">'+rows+'</ul>':'<div class="empty"><p>Your nightly list is empty.</p><button class="btn ghost" data-go="editItems">Add items</button></div>')+
+    '<div class="actions sticky"><button class="btn primary" id="toDream">Enter my dream life</button></div></main>';
+}
+
+function toggleItem(btn){
+  var id=btn.dataset.item,t=tonight(),idx=t.i.indexOf(id),on=idx<0;
+  if(on){t.i.push(id);buzz(12);}else t.i.splice(idx,1);
+  btn.classList.toggle('on',on);btn.setAttribute('aria-pressed',String(on));
+  btn.querySelector('.ws').textContent=nights(itemStreak(id));
+  var count=S.items.filter(function(x){return t.i.indexOf(x.id)>=0;}).length;
+  var c=$('#count');c.textContent=count+' of '+S.items.length;
+  if(on&&count===S.items.length){c.classList.remove('glow');void c.offsetWidth;c.classList.add('glow');buzz([15,40,15]);}
+  saveLocal();
+}
+
+function renderDream(){
+  if(!S.goals.length){
+    app.innerHTML='<main class="view"><header class="bar"><button class="back" data-go="home" aria-label="Back to home">‹</button><h2>Dream life</h2></header>'+
+      '<div class="empty"><p>Add the goals you want to see every night, each written as if it’s already true.</p>'+
+      '<button class="btn primary" data-go="editGoals">Add dream goals</button>'+
+      '<button class="btn ghost" id="finishNoGoals">Finish tonight</button></div></main>';
+    return;
+  }
+  var dots=S.goals.map(function(){return '<span class="dot"></span>';}).join('');
+  app.innerHTML='<div class="dream" id="dream">'+
+    '<div class="stage" id="stage"></div><div class="scrim"></div>'+
+    '<div class="dtop"><button class="dclose" id="dclose" aria-label="Close dream life">×</button><div class="dots">'+dots+'</div></div>'+
+    '<div class="dtext"><p class="goal" id="goalText"></p><p class="affirmed" id="affirmed">It’s done.</p></div>'+
+    '<div class="dhold"><button class="hold" id="hold" aria-label="Hold to affirm">'+
+      '<svg class="ringsvg" viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="54"/><circle class="ring" id="ring" cx="60" cy="60" r="54"/></svg>'+
+      '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path class="ic-moon" d="M19.5 14.6A8 8 0 0 1 9.4 4.5a8 8 0 1 0 10.1 10.1z"/><path class="ic-check" d="M5 12.5l4.2 4.2L19 7"/></svg>'+
+    '</button><p class="holdhint" id="holdhint">Hold to affirm</p></div></div>';
+  var btn=$('#hold');
+  btn.addEventListener('pointerdown',function(e){if(e.button>0)return;try{btn.setPointerCapture(e.pointerId);}catch(_){}startHold();});
+  ['pointerup','pointercancel','lostpointercapture'].forEach(function(ev){btn.addEventListener(ev,endHold);});
+  btn.addEventListener('contextmenu',function(e){e.preventDefault();});
+  btn.addEventListener('keydown',function(e){if((e.key==='Enter'||e.key===' ')&&!e.repeat){e.preventDefault();startHold();}});
+  btn.addEventListener('keyup',function(e){if(e.key==='Enter'||e.key===' ')endHold();});
+  $('#dclose').addEventListener('click',function(){persist();go('home');});
+  showGoal(dreamIndex);
+}
+
+function mediaLayer(g,i){
+  var L=document.createElement('div');L.className='layer';
+  function aur(){L.innerHTML='<div class="aurora" style="--h:'+hue(i)+'"></div><div class="stars"></div>';}
+  if(g.media&&g.media.id){
+    var src=mediaURL(g.media.id);
+    if(g.media.type==='video'){
+      var v=document.createElement('video');v.muted=true;v.loop=true;v.autoplay=true;v.playsInline=true;
+      v.setAttribute('playsinline','');v.setAttribute('muted','');v.onerror=aur;v.src=src;L.appendChild(v);
+      var pr=v.play&&v.play();if(pr&&pr.catch)pr.catch(function(){});
+    }else{
+      var im=new Image();im.alt='';im.className='kb kb'+(i%3);im.onerror=aur;im.src=src;L.appendChild(im);
+    }
+  }else aur();
+  return L;
+}
+
+function setRing(p){var r=$('#ring');if(r)r.style.strokeDashoffset=String(CIRC*(1-p));}
+
+function showGoal(i){
+  var g=S.goals[i],stage=$('#stage');if(!g||!stage)return;
+  cancelAnimationFrame(hold.raf);hold={raf:0,start:0,p:0,done:false};
+  var layer=mediaLayer(g,i);stage.appendChild(layer);
+  requestAnimationFrame(function(){requestAnimationFrame(function(){layer.classList.add('show');});});
+  var olds=Array.prototype.slice.call(stage.querySelectorAll('.layer'),0,-1);
+  setTimeout(function(){olds.forEach(function(o){o.remove();});},1300);
+  var gt=$('#goalText'),first=!gt.textContent;
+  gt.classList.remove('show');
+  setTimeout(function(){gt.textContent=g.text||'';gt.classList.add('show');},first?60:460);
+  $('#affirmed').classList.remove('show');
+  Array.prototype.forEach.call(document.querySelectorAll('.dot'),function(d,j){d.className='dot'+(j<i?' past':(j===i?' now':''));});
+  var btn=$('#hold');btn.classList.remove('done','pressing');setRing(0);
+  btn.setAttribute('aria-label','Hold to affirm: '+(g.text||'this goal'));
+  $('#holdhint').textContent='Hold to affirm';
+}
+
+function startHold(){
+  if(hold.done)return;
+  cancelAnimationFrame(hold.raf);
+  $('#hold').classList.add('pressing');$('#holdhint').textContent='Feel it as real…';
+  hold.start=performance.now()-hold.p*HOLD_MS;buzz(8);
+  function step(t){hold.p=Math.min(1,(t-hold.start)/HOLD_MS);setRing(hold.p);if(hold.p>=1)affirm();else hold.raf=requestAnimationFrame(step);}
+  hold.raf=requestAnimationFrame(step);
+}
+function endHold(){
+  if(hold.done)return;
+  cancelAnimationFrame(hold.raf);
+  var btn=$('#hold');if(btn)btn.classList.remove('pressing');
+  var from=hold.p;if(from<=0)return;
+  var h=$('#holdhint');if(h)h.textContent='Hold a little longer';
+  var t0=performance.now();
+  function back(t){hold.p=Math.max(0,from*(1-(t-t0)/300));setRing(hold.p);if(hold.p>0)hold.raf=requestAnimationFrame(back);}
+  hold.raf=requestAnimationFrame(back);
+}
+function affirm(){
+  hold.done=true;
+  var g=S.goals[dreamIndex],t=tonight();if(t.g.indexOf(g.id)<0)t.g.push(g.id);saveLocal();
+  var btn=$('#hold');btn.classList.remove('pressing');btn.classList.add('done');
+  $('#affirmed').classList.add('show');
+  var last=dreamIndex>=S.goals.length-1;
+  $('#holdhint').textContent=last?'All affirmed':'Next dream';
+  buzz([20,50,30]);
+  advanceTimer=setTimeout(function(){
+    if(view!=='dream')return;
+    if(!last){dreamIndex++;showGoal(dreamIndex);}else finishNight();
+  },1500);
+}
+function finishNight(){var t=tonight();t.d=1;persist();buzz([20,60,20,60,40]);go('done');}
+
+function renderDone(){
+  var s=ritualStreak(),t=S.history[nightKey()]||{i:[],g:[]};
+  var wins=S.items.filter(function(x){return t.i.indexOf(x.id)>=0;}).length;
+  var aff=S.goals.filter(function(x){return t.g.indexOf(x.id)>=0;}).length;
+  app.innerHTML='<main class="view done"><div class="bigmoon" aria-hidden="true"></div>'+
+    '<h2 class="doneh">Done for tonight.</h2><p class="donep">Feel it as already yours. Now sleep.</p>'+
+    '<p class="streak"><span class="num">'+s+'</span> '+(s===1?'night':'nights')+' in a row</p>'+
+    '<p class="sub">'+wins+' of '+S.items.length+' wins tonight, '+aff+' '+(aff===1?'goal':'goals')+' affirmed</p>'+
+    '<div class="actions sticky"><button class="btn ghost" data-go="home">Close</button></div></main>';
+}
+
+function renderEditItems(){
+  if(!draftItems)draftItems=S.items.map(function(x){return {id:x.id,text:x.text};});
+  var n=draftItems.length;
+  var rows=draftItems.map(function(it,i){
+    return '<li><textarea rows="2" data-ii="'+i+'" aria-label="Item '+(i+1)+'" placeholder="I didn’t …">'+esc(it.text)+'</textarea>'+
+      '<div class="rowbtns"><button class="icon" data-up="'+i+'" aria-label="Move up"'+(i===0?' disabled':'')+'>↑</button>'+
+      '<button class="icon" data-down="'+i+'" aria-label="Move down"'+(i===n-1?' disabled':'')+'>↓</button>'+
+      '<button class="textbtn" data-del="'+i+'">Remove</button></div></li>';}).join('');
+  app.innerHTML='<main class="view"><header class="bar"><button class="back" id="cancelItems" aria-label="Back without saving">‹</button><h2>Nightly list</h2></header>'+
+    '<p class="hint">Write each one the way you’d say it at night: “I didn’t…” or “I did…”.</p>'+
+    '<ul class="edit">'+rows+'</ul><button class="btn ghost" id="addItem">Add item</button>'+
+    '<div class="actions sticky"><button class="btn primary" id="saveItems">Save list</button></div></main>';
+}
+
+function thumb(g,i){
+  if(g.media&&g.media.id){var src=mediaURL(g.media.id);
+    return g.media.type==='video'?'<video src="'+src+'" muted playsinline preload="metadata"></video>':'<img src="'+src+'" alt="">';}
+  return '<div class="aurora still" style="--h:'+hue(i)+'"></div>';
+}
+function renderEditGoals(){
+  if(!draftGoals)draftGoals=S.goals.map(function(g){return {id:g.id,text:g.text,media:g.media?{id:g.media.id,type:g.media.type}:null};});
+  var n=draftGoals.length,can=!!assets;
+  var rows=draftGoals.map(function(g,i){
+    return '<li class="gcard"><div class="thumb">'+thumb(g,i)+'</div><div>'+
+      '<textarea rows="3" data-gi="'+i+'" aria-label="Goal '+(i+1)+'" placeholder="I live in my dream home by the mountains.">'+esc(g.text)+'</textarea>'+
+      '<div class="rowbtns">'+
+        (can?'<label class="btn small">'+(g.media?'Replace image':'Add image or video')+'<input type="file" accept="image/*,video/mp4,video/webm" data-file="'+i+'" hidden></label>':'')+
+        (g.media?'<button class="textbtn" data-rmmedia="'+i+'">Remove image</button>':'')+
+      '</div><div class="rowbtns">'+
+        '<button class="icon" data-gup="'+i+'" aria-label="Move up"'+(i===0?' disabled':'')+'>↑</button>'+
+        '<button class="icon" data-gdown="'+i+'" aria-label="Move down"'+(i===n-1?' disabled':'')+'>↓</button>'+
+        '<button class="textbtn" data-gdel="'+i+'">Remove goal</button>'+
+      '</div><p class="upmsg" id="up'+i+'"></p></div></li>';}).join('');
+  app.innerHTML='<main class="view"><header class="bar"><button class="back" id="cancelGoals" aria-label="Back without saving">‹</button><h2>Dream goals</h2></header>'+
+    '<p class="hint">Write each goal as if it’s already true. Add a vertical image or a short video for each.</p>'+
+    '<ul class="gedit">'+rows+'</ul><button class="btn ghost" id="addGoal">Add goal</button>'+
+    (can?'':'<p class="hint">Images can’t be saved on this device.</p>')+
+    '<div class="actions sticky"><button class="btn primary" id="saveGoals">Save goals</button></div></main>';
+}
+
+function downscale(file){
+  return new Promise(function(resolve,reject){
+    if(!window.createImageBitmap){reject({code:'decode'});return;}
+    createImageBitmap(file).then(function(bmp){
+      var max=1600,s=Math.min(1,max/Math.max(bmp.width,bmp.height));
+      var w=Math.round(bmp.width*s),h=Math.round(bmp.height*s);
+      var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);
+      c.toBlob(function(b){b?resolve(b):reject({code:'decode'});},'image/jpeg',0.86);
+    }).catch(function(){reject({code:'decode'});});
+  }).catch(function(e){
+    if(/^image\/(png|jpeg|webp|gif)$/.test(file.type))return file;
+    throw e;
+  });
+}
+function uploadMsg(code){
+  return ({too_large:'That file is over 60 MB. Use a shorter or smaller clip.',
+    unsupported_type:'Use a JPG, PNG or WebP image, or an MP4 or WebM video.',
+    decode:'This image format can’t be read. Save it as JPG or PNG and try again.',
+    quota_or_state:'Storage is full. Remove an image from another goal and try again.',
+    rate_limited:'Too many uploads at once. Wait a moment and try again.',
+    not_granted:'Uploads aren’t available in this view.',capability_disabled:'Uploads aren’t available in this view.'})[code]
+    ||'The upload didn’t go through. Try again.';
+}
+function handleFile(i,file){
+  var msg=$('#up'+i);if(msg)msg.textContent='Uploading…';
+  var isVideo=/^video\//.test(file.type);
+  var p;
+  if(isVideo){
+    if(!/^video\/(mp4|webm)$/.test(file.type))p=Promise.reject({code:'unsupported_type'});
+    else if(file.size>60*1024*1024)p=Promise.reject({code:'too_large'});
+    else p=Promise.resolve(file);
+  }else p=downscale(file);
+  p.then(function(blob){
+    var tried=false;
+    function up(){return assets.upload(blob,blob.type?undefined:{type:'image/jpeg'}).catch(function(e){
+      if(e&&e.code==='store_unavailable'&&!tried){tried=true;return wait(800).then(up);}throw e;});}
+    return up();
+  }).then(function(res){
+    if(!draftGoals||!draftGoals[i])return;
+    draftGoals[i].media={id:res.id,type:isVideo?'video':'image'};
+    renderEditGoals();
+  }).catch(function(e){var m=$('#up'+i);if(m)m.textContent=uploadMsg(e&&e.code);});
+}
+
+function move(arr,i,d){var j=i+d;if(j<0||j>=arr.length)return;var x=arr[i];arr[i]=arr[j];arr[j]=x;}
+
+/* ---------- backup: export / import (JSON + media) ---------- */
+function backupRow(){
+  return '<nav class="backup"><button class="link" id="exportBackup">Back up</button>'+
+    '<span class="dot-sep" aria-hidden="true">•</span>'+
+    '<button class="link" id="importBackup">Restore</button>'+
+    '<span class="hintline">Save everything to a file, or bring it to a new phone.</span></nav>';
+}
+function blobToDataURL(blob){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result);};r.onerror=function(){rej(r.error);};r.readAsDataURL(blob);});}
+function dataURLToBlob(d){
+  var i=String(d).indexOf(',');if(i<0)throw new Error('bad');
+  var meta=d.slice(5,i),b64=d.slice(i+1),type=(meta.split(';')[0])||'application/octet-stream';
+  var bin=atob(b64),len=bin.length,arr=new Uint8Array(len);
+  for(var j=0;j<len;j++)arr[j]=bin.charCodeAt(j);
+  return new Blob([arr],{type:type});
+}
+function allMedia(){return new Promise(function(res){var out=[];if(!idb)return res(out);
+  try{var st=idb.transaction('media').objectStore('media'),req=st.openCursor();
+  req.onsuccess=function(){var c=req.result;if(c){out.push({id:c.key,blob:c.value});c.continue();}else res(out);};
+  req.onerror=function(){res(out);};}catch(e){res(out);}});}
+function downloadBlob(blob,fname){
+  try{var url=URL.createObjectURL(blob);var a=document.createElement('a');a.href=url;a.download=fname;
+    document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(url);a.remove();},6000);
+    toast('Backup saved to your files');}catch(e){toast('Backup couldn’t be saved here.');}
+}
+function exportBackup(){
+  toast('Preparing backup…');
+  allMedia().then(function(list){
+    return Promise.all(list.map(function(m){
+      return blobToDataURL(m.blob).then(function(d){return {id:m.id,type:(m.blob&&m.blob.type)||'application/octet-stream',data:d};});
+    })).then(function(media){
+      var payload={app:'winning-streak',format:1,exportedAt:new Date().toISOString(),state:serialize(),reminder:getRem(),media:media};
+      var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+      var fname='winning-streak-backup-'+nightKey()+'.json';
+      var file=null;try{file=new File([blob],fname,{type:'application/json'});}catch(_){}
+      if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
+        navigator.share({files:[file],title:'Winning Streak backup'}).then(function(){toast('Backup ready — save it somewhere safe.');})
+          .catch(function(e){if(e&&e.name==='AbortError')return;downloadBlob(blob,fname);});
+      }else downloadBlob(blob,fname);
+    });
+  }).catch(function(){toast('Couldn’t build the backup. Try again.');});
+}
+function writeImportedMedia(media){
+  return new Promise(function(resolve){
+    Object.keys(mediaMap).forEach(function(k){try{URL.revokeObjectURL(mediaMap[k]);}catch(_){}});
+    mediaMap={};
+    if(!idb){resolve();return;}
+    try{var tx=idb.transaction('media','readwrite'),store=tx.objectStore('media');store.clear();
+      (media||[]).forEach(function(m){try{var blob=dataURLToBlob(m.data);store.put(blob,m.id);mediaMap[m.id]=URL.createObjectURL(blob);}catch(_){}});
+      tx.oncomplete=function(){resolve();};tx.onerror=tx.onabort=function(){resolve();};
+    }catch(e){resolve();}
+  });
+}
+function importBackupFile(file){
+  var r=new FileReader();
+  r.onload=function(){
+    var data;try{data=JSON.parse(r.result);}catch(e){toast('That file isn’t a valid backup.');return;}
+    if(!data||data.app!=='winning-streak'||!data.state){toast('That isn’t a Winning Streak backup.');return;}
+    if(!window.confirm('Restore this backup?\n\nIt replaces the wins, goals, photos and streak currently on this phone.'))return;
+    var st=data.state;
+    writeImportedMedia(data.media||[]).then(function(){
+      try{localStorage.setItem(LS,JSON.stringify({v:1,cfgAt:st.cfgAt||Date.now(),
+        items:Array.isArray(st.items)?st.items:[],goals:Array.isArray(st.goals)?st.goals:[],
+        history:(st.history&&typeof st.history==='object')?st.history:{}}));}catch(_){}
+      if(data.reminder){try{localStorage.setItem(REM,data.reminder);}catch(_){}}
+      loadLocal();
+      scheduleReminder(getRem(),false);
+      go('home');
+      toast('Backup restored');
+    });
+  };
+  r.onerror=function(){toast('Couldn’t read that file.');};
+  r.readAsText(file);
+}
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='importFile'&&e.target.files&&e.target.files[0]){
+    var f=e.target.files[0];e.target.value='';importBackupFile(f);
+  }
+});
+
+
+/* ---------- native: on-phone media + reminder ---------- */
+var SEED=["I didn't feel lack today","I did my meditation today","I didn't lose my energy during the day today",
+ "I didn't blame anyone today","I didn't lose hope in my Wealthy dream today","I didn't get angry on Riya today",
+ "I walked 15000 steps today","I was the best communicator today and a confident one",
+ "I didn't drink alcohol today. No alcohol until my debt is gone and I earn $100,000 in a single month",
+ "I didn't take my phone into the toilet today","I didn't drink tea today"];
+var mediaMap={}, idb=null, REM='winningStreak.reminder';
+function openIDB(){return new Promise(function(res){try{var r=indexedDB.open('winningStreakMedia',1);
+  r.onupgradeneeded=function(){r.result.createObjectStore('media');};
+  r.onsuccess=function(){idb=r.result;res();};r.onerror=function(){res();};}catch(e){res();}});}
+function loadMedia(){return new Promise(function(res){if(!idb)return res();
+  var st=idb.transaction('media').objectStore('media'),req=st.openCursor();
+  req.onsuccess=function(){var c=req.result;if(c){mediaMap[c.key]=URL.createObjectURL(c.value);c.continue();}else res();};
+  req.onerror=function(){res();};});}
+function mediaURL(id){return mediaMap[id]||'';}
+var localAssets={upload:function(blob){return new Promise(function(res,rej){
+  if(!idb)return rej({code:'quota_or_state'});
+  var id=nid('m'),tx=idb.transaction('media','readwrite');tx.objectStore('media').put(blob,id);
+  tx.oncomplete=function(){mediaMap[id]=URL.createObjectURL(blob);res({id:id});};
+  tx.onerror=tx.onabort=function(){rej({code:'quota_or_state'});};});}};
+function plugin(n){return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins[n];}
+function getRem(){try{return localStorage.getItem(REM)||'21:30';}catch(e){return '21:30';}}
+function fmt12(t){var p=t.split(':'),h=+p[0],m=p[1];return ((h%12)||12)+':'+m+(h<12?' AM':' PM');}
+function reminderRow(){return '<p class="sub" style="text-align:center;margin-top:1.75rem">Nightly reminder: '+fmt12(getRem())+
+  ' <label class="link" style="display:inline">Change<input type="time" id="remTime" value="'+getRem()+'" style="position:absolute;opacity:0;width:1px;height:1px"></label></p>';}
+function scheduleReminder(t,announce){
+  var LN=plugin('LocalNotifications');if(!LN)return;
+  var p=t.split(':');
+  LN.requestPermissions().then(function(r){
+    if(r.display!=='granted'){toast('Allow notifications to get your nightly reminder.');return;}
+    return LN.cancel({notifications:[{id:1}]}).catch(function(){}).then(function(){
+      return LN.schedule({notifications:[{id:1,title:'Winning Streak 🌙',body:'Tick your wins, then enter your dream life.',
+        smallIcon:'ic_stat_moon',iconColor:'#F2B84B',
+        schedule:{on:{hour:+p[0],minute:+p[1]},allowWhileIdle:true}}]});
+    }).then(function(){if(announce)toast('Reminder set for '+fmt12(t));});
+  }).catch(function(){});
+}
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.id==='remTime'&&e.target.value){try{localStorage.setItem(REM,e.target.value);}catch(_){}
+    scheduleReminder(e.target.value,true);render();}
+});
+document.addEventListener('click',function(e){var l=e.target.closest&&e.target.closest('label.link');
+  if(l){var i=l.querySelector('input[type=time]');if(i){e.preventDefault();if(i.showPicker){try{i.showPicker();return;}catch(_){}}i.click();}}});
+function nativeInit(){
+  assets=localAssets;
+  var A=plugin('App');
+  if(A)A.addListener('backButton',function(){
+    if(view==='home')A.exitApp();
+    else{if(view==='editItems')draftItems=null;if(view==='editGoals')draftGoals=null;persist();go('home');}
+  });
+  A&&A.addListener('appStateChange',function(s){if(s.isActive&&view==='home')render();});
+  scheduleReminder(getRem(),false);
+}
+
+/* ---------- routing ---------- */
+function render(){
+  var f={home:renderHome,streak:renderStreak,dream:renderDream,done:renderDone,editItems:renderEditItems,editGoals:renderEditGoals}[view]||renderHome;
+  f();
+}
+function go(v){
+  clearTimeout(advanceTimer);cancelAnimationFrame(hold.raf);
+  view=v;if(v==='dream')dreamIndex=0;
+  render();window.scrollTo(0,0);
+}
+function fadeTo(v){document.body.classList.add('fading');setTimeout(function(){go(v);document.body.classList.remove('fading');},420);}
+
+app.addEventListener('click',function(e){
+  var t=e.target.closest('button');if(!t)return;
+  var ds=t.dataset;
+  if(ds.go){if(ds.go==='editItems')draftItems=null;if(ds.go==='editGoals')draftGoals=null;go(ds.go);return;}
+  if(ds.item){toggleItem(t);return;}
+  if(ds.up!=null){move(draftItems,+ds.up,-1);renderEditItems();return;}
+  if(ds.down!=null){move(draftItems,+ds.down,1);renderEditItems();return;}
+  if(ds.del!=null){draftItems.splice(+ds.del,1);renderEditItems();return;}
+  if(ds.gup!=null){move(draftGoals,+ds.gup,-1);renderEditGoals();return;}
+  if(ds.gdown!=null){move(draftGoals,+ds.gdown,1);renderEditGoals();return;}
+  if(ds.gdel!=null){draftGoals.splice(+ds.gdel,1);renderEditGoals();return;}
+  if(ds.rmmedia!=null){draftGoals[+ds.rmmedia].media=null;renderEditGoals();return;}
+  switch(t.id){
+    case 'toDream':tonight();persist();fadeTo('dream');break;
+    case 'finishNoGoals':finishNight();break;
+    case 'addItem':draftItems.push({id:nid('i'),text:''});renderEditItems();
+      var ta=app.querySelectorAll('textarea');if(ta.length)ta[ta.length-1].focus();break;
+    case 'saveItems':
+      S.items=draftItems.map(function(x){return {id:x.id,text:x.text.trim()};}).filter(function(x){return x.text;});
+      S.cfgAt=Date.now();draftItems=null;persist();toast('List saved');go('home');break;
+    case 'cancelItems':draftItems=null;go('home');break;
+    case 'addGoal':draftGoals.push({id:nid('g'),text:'',media:null});renderEditGoals();
+      var tg=app.querySelectorAll('textarea');if(tg.length)tg[tg.length-1].focus();break;
+    case 'saveGoals':
+      S.goals=draftGoals.map(function(g){return {id:g.id,text:g.text.trim(),media:g.media||null};}).filter(function(g){return g.text||g.media;});
+      S.cfgAt=Date.now();draftGoals=null;persist();toast('Goals saved');go('home');break;
+    case 'cancelGoals':draftGoals=null;go('home');break;
+    case 'exportBackup':exportBackup();break;
+    case 'importBackup':var imp=document.getElementById('importFile');if(imp)imp.click();break;
+  }
+});
+app.addEventListener('input',function(e){
+  var t=e.target,ds=t.dataset;
+  if(ds.ii!=null&&draftItems&&draftItems[+ds.ii])draftItems[+ds.ii].text=t.value;
+  if(ds.gi!=null&&draftGoals&&draftGoals[+ds.gi])draftGoals[+ds.gi].text=t.value;
+});
+app.addEventListener('change',function(e){
+  var t=e.target;if(t.dataset.file!=null&&t.files&&t.files[0]&&assets)handleFile(+t.dataset.file,t.files[0]);
+});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&view==='home')render();});
+
+loadLocal();
+if(!S.items.length&&!S.cfgAt){S.items=SEED.map(function(t,i){return {id:'i'+(i+1),text:t};});S.cfgAt=1;saveLocal();}
+openIDB().then(loadMedia).then(function(){nativeInit();render();});
+})();
+</script>
+<script>
+/* Register the service worker for offline use — browser/PWA only, not inside the native app. */
+(function(){
+  var native = window.Capacitor && typeof window.Capacitor.isNativePlatform === 'function' && window.Capacitor.isNativePlatform();
+  if ('serviceWorker' in navigator && !native && location.protocol.indexOf('http') === 0) {
+    window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+  }
+})();
+</script>
+</body>
+</html>
