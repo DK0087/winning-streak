@@ -63,11 +63,21 @@ jobs:
           KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           if [ -n "$KS_B64" ] && [ -n "$KS_PASS" ]; then
-            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+            # Tolerate stray whitespace/quotes from copy-paste.
+            CLEAN=$(printf '%s' "$KS_B64" | tr -d '[:space:]"'"'")
+            echo "Secret length after cleanup: ${#CLEAN} chars (expected 3700), starts with: ${CLEAN:0:4} (expected MIIK)"
+            if ! printf '%s' "$CLEAN" | base64 -d > "$RUNNER_TEMP/release.keystore" 2>/dev/null; then
+              echo "::error::ANDROID_KEYSTORE_BASE64 is not valid base64. Re-copy the single long line (starts with MIIK, 3700 characters, nothing else) from winning-streak-signing-secrets.txt into the secret."
+              exit 1
+            fi
+            if ! keytool -list -keystore "$RUNNER_TEMP/release.keystore" -storepass "$KS_PASS" -alias winningstreak >/dev/null 2>&1; then
+              echo "::error::Keystore decoded but could not be opened. Check ANDROID_KEYSTORE_PASSWORD (exactly WinningStreak2026! with no spaces) and that ANDROID_KEYSTORE_BASE64 is the full line."
+              exit 1
+            fi
             echo "WS_KEYSTORE_FILE=$RUNNER_TEMP/release.keystore" >> "$GITHUB_ENV"
             echo "WS_KEY_ALIAS=winningstreak" >> "$GITHUB_ENV"
             echo "signed=true" >> "$GITHUB_OUTPUT"
-            echo "Keystore present - building a signed release."
+            echo "Keystore verified - building a signed release."
           else
             echo "signed=false" >> "$GITHUB_OUTPUT"
             echo "::warning::No ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD secret set - building a debug-signed APK and skipping the Release. Add the secrets to publish the installable signed app."
