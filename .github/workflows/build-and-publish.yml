@@ -41,12 +41,15 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - uses: android-actions/setup-android@v3
-
+      # The ubuntu runner ships the Android SDK (ANDROID_HOME). Use its own sdkmanager
+      # rather than android-actions/setup-android, whose default 'tools' package no
+      # longer exists in current cmdline-tools and makes that action fail.
       - name: Install Android SDK packages
         run: |
-          yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools" >/dev/null 2>&1 || true
+          SDKM=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | sort -V | tail -1)
+          echo "Using $SDKM"
+          yes | "$SDKM" --licenses > /dev/null || true
+          "$SDKM" --install "platforms;android-36" "build-tools;36.0.0" "platform-tools" | tail -3
 
       - name: Install JS deps and sync Capacitor
         run: |
