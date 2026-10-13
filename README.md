@@ -45,8 +45,8 @@ signs **WinningStreak.apk**, attaches it to a Release, and deploys the download 
 Keep the keystore file and password forever — the same key means every future update
 installs over the old app. Lose it and you'd have to uninstall/reinstall to update.
 
-Until the secrets are set, CI still passes and the PWA still deploys; it just skips
-the signed Release.
+Until the secrets are set, the build can't produce the signed APK. If a secret is wrong,
+the build log's "Prepare signing key" step says which one and why.
 
 ## ❓ Install troubleshooting
 
