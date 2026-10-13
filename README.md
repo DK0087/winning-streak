@@ -48,6 +48,12 @@ installs over the old app. Lose it and you'd have to uninstall/reinstall to upda
 Until the secrets are set, CI still passes and the PWA still deploys; it just skips
 the signed Release.
 
+## ❓ Install troubleshooting
+
+- **"App not installed":** an older copy signed with a different key is on the phone. Uninstall it once (use **Back up** first), then install the new APK. Later updates install over it.
+- **No "Allow from this source" prompt:** open Android **Settings → Apps → Special access → Install unknown apps**, choose your browser, and turn it on.
+- **No reminder at 9:30 PM:** allow notifications and **Alarms & reminders** for Winning Streak in Android settings, and exclude it from battery optimisation.
+
 ## 🛠️ Develop
 
 The whole UI is one file: [`www/index.html`](www/index.html) (vanilla JS, no build step).
