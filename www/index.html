@@ -201,13 +201,13 @@ textarea:focus{border-color:var(--amber);outline:none}
 <body>
 <div id="app"></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<input type="file" id="importFile" accept="application/json,.json" hidden>
+<input type="file" id="importFile" hidden>
 <script>
 (function(){
 'use strict';
 var HOLD_MS=1100, DAY_START=4, LS='winningStreak.v1', CIRC=339.292;
 var S={items:[],goals:[],history:{},cfgAt:0};
-var view='home', dreamIndex=0, db=null, assets=null, docRef=null;
+var view='home', dreamIndex=0, assets=null;
 var draftItems=null, draftGoals=null, advanceTimer=0;
 var hold={raf:0,start:0,p:0,done:false};
 var app=document.getElementById('app');
@@ -237,50 +237,9 @@ function loadLocal(){try{var r=JSON.parse(localStorage.getItem(LS)||'null');
   if(r&&typeof r==='object'){S.items=Array.isArray(r.items)?r.items:[];S.goals=Array.isArray(r.goals)?r.goals:[];
   S.history=(r.history&&typeof r.history==='object')?r.history:{};S.cfgAt=r.cfgAt||0;}}catch(e){}}
 function saveLocal(){try{localStorage.setItem(LS,JSON.stringify(serialize()));}catch(e){}}
-var queued=false, chain=Promise.resolve();
 function wait(ms){return new Promise(function(r){setTimeout(r,ms);});}
-function persist(){
-  saveLocal();
-  if(!docRef||queued)return;
-  queued=true;
-  chain=chain.then(function(){
-    queued=false;
-    var body=JSON.parse(JSON.stringify(serialize()));
-    return docRef.set(body).catch(function(e){
-      var code=e&&e.code;
-      if(code==='unavailable'){return wait(700+Math.random()*900).then(function(){return docRef.set(body);}).catch(function(){toast('Saved on this phone. It will sync next time.');});}
-      if(code==='quota_exceeded'){toast('Storage is full. Remove a few goals or images.');return;}
-      toast('Saved on this phone only.');
-    });
-  });
-}
-function score(n){if(!n)return -1;return (n.i||[]).length+(n.g||[]).length+(n.d?100:0);}
-function mergeRemote(r){
-  var push=false, rc=r.cfgAt||0;
-  if(rc>=S.cfgAt){if(Array.isArray(r.items))S.items=r.items;if(Array.isArray(r.goals))S.goals=r.goals;S.cfgAt=rc;}
-  else push=true;
-  var rh=(r.history&&typeof r.history==='object')?r.history:{};
-  Object.keys(rh).forEach(function(k){var a=S.history[k],b=rh[k];if(!a||score(b)>score(a))S.history[k]=b;});
-  Object.keys(S.history).forEach(function(k){if(score(S.history[k])>score(rh[k]))push=true;});
-  return push;
-}
-function connect(){
-  if(!window.claude||typeof window.claude.use!=='function')return;
-  Promise.all([window.claude.use('db'),window.claude.use('user'),window.claude.use('assets')]).then(function(res){
-    var dbNs=res[0],userNs=res[1];assets=res[2]||null;
-    if(!dbNs||!userNs)return null;
-    return userNs.id().then(function(id){
-      if(!id)return null;
-      db=dbNs;docRef=db.doc('data/users/'+id+'/state');
-      return docRef.get().catch(function(){return wait(900).then(function(){return docRef.get();});}).then(function(snap){
-        if(snap&&snap.exists){var push=mergeRemote(JSON.parse(JSON.stringify(snap.data())));saveLocal();if(push)persist();}
-        else if(S.items.length||S.goals.length||Object.keys(S.history).length)persist();
-      });
-    });
-  }).catch(function(e){console.warn('Sync unavailable',e);}).then(function(){
-    if(view==='home'||view==='editGoals')render();
-  });
-}
+/* Everything lives on the phone: state in localStorage, media in IndexedDB. */
+function persist(){saveLocal();}
 
 /* ---------- views ---------- */
 function renderHome(){
@@ -553,8 +512,16 @@ function exportBackup(){
       return blobToDataURL(m.blob).then(function(d){return {id:m.id,type:(m.blob&&m.blob.type)||'application/octet-stream',data:d};});
     })).then(function(media){
       var payload={app:'winning-streak',format:1,exportedAt:new Date().toISOString(),state:serialize(),reminder:getRem(),media:media};
-      var blob=new Blob([JSON.stringify(payload)],{type:'application/json'});
+      var json=JSON.stringify(payload);
       var fname='winning-streak-backup-'+nightKey()+'.json';
+      var FS=plugin('Filesystem'),SH=plugin('Share');
+      if(FS&&SH){ // Android app: write the file natively, then open the share sheet (Drive, Files, email…)
+        return FS.writeFile({path:fname,data:json,directory:'CACHE',encoding:'utf8'}).then(function(res){
+          return SH.share({title:'Winning Streak backup',dialogTitle:'Save your backup',files:[res.uri]});
+        }).then(function(){toast('Backup ready — keep it somewhere safe.');})
+          .catch(function(e){if(/cancel/i.test(String(e&&(e.message||e))))return;toast('Couldn’t save the backup. Try again.');});
+      }
+      var blob=new Blob([json],{type:'application/json'});
       var file=null;try{file=new File([blob],fname,{type:'application/json'});}catch(_){}
       if(file&&navigator.canShare&&navigator.canShare({files:[file]})&&navigator.share){
         navigator.share({files:[file],title:'Winning Streak backup'}).then(function(){toast('Backup ready — save it somewhere safe.');})
@@ -625,7 +592,7 @@ var localAssets={upload:function(blob){return new Promise(function(res,rej){
 function plugin(n){return window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins[n];}
 function getRem(){try{return localStorage.getItem(REM)||'21:30';}catch(e){return '21:30';}}
 function fmt12(t){var p=t.split(':'),h=+p[0],m=p[1];return ((h%12)||12)+':'+m+(h<12?' AM':' PM');}
-function reminderRow(){return '<p class="sub" style="text-align:center;margin-top:1.75rem">Nightly reminder: '+fmt12(getRem())+
+function reminderRow(){if(!plugin('LocalNotifications'))return '';return '<p class="sub" style="text-align:center;margin-top:1.75rem">Nightly reminder: '+fmt12(getRem())+
   ' <label class="link" style="display:inline">Change<input type="time" id="remTime" value="'+getRem()+'" style="position:absolute;opacity:0;width:1px;height:1px"></label></p>';}
 function scheduleReminder(t,announce){
   var LN=plugin('LocalNotifications');if(!LN)return;
